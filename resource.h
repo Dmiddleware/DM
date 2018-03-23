@@ -1,14 +1,13 @@
 /*
  * resource.h
  *
- *  Created on: 2018年3月6日
- *      Author: zjbpoping
  */
 #ifndef RESOURCE_H_
 #define RESOURCE_H_
 
 #include <string>
 #include "object.h"
+#include <map>
 
 namespace ps{
 
@@ -17,7 +16,7 @@ namespace ps{
 	public:
 		void AddObject(Object* obj){
 			objects_[obj->uid] = obj;
-			for (auto it : op_funcs){
+			for (auto it : obj->op_funcs){
 				op_objs_[it.first]=obj;
 			}
 		}
@@ -27,14 +26,14 @@ namespace ps{
 			objects_[id]->AddFunc(func, ips, ops, value);
   		}
   		/*返回object和func*/
-  		std::pair<int, std::string> FindFunc(std::string op) {
+  		std::pair<int, std::string> FindFuncByop(std::string op) {
   			int qostemp;
   			std::pair<int, std::string> result;
   			if (!op_objs_[op].empty()) {
 	  			qostemp = INT_MAX; 
 	  			for (int i=0; i<op_objs_[op].size(); i++){
 	  				int id = op_objs_[op][i];
-	  				std::pair<std::string, int> obj_qos_ = objects_[id]->FindFunc(op);
+	  				std::pair<std::string, int> obj_qos_ = objects_[id]->FindFuncByop(op);
 	  				if (obj_qos_.second < qostemp){
 	  					result = std::make_pair(id, obj_qos_.first);
 	  					qostemp = obj_qos_.second;
@@ -51,3 +50,4 @@ namespace ps{
 
 
 }
+#endif /*RESOURCE_H_*/
