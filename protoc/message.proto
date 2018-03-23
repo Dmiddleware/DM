@@ -9,7 +9,7 @@ message Meta {
   required int32 receiver = 3;
   required int32 timestamp = 4;
   required bool request = 5;
-  optional bool push = 6;
+  required bool push = 6;
 
   message Node_ {
 
@@ -28,4 +28,22 @@ message Meta {
 
   optional int32 customer_id = 9;
 
+}
+
+message Meta_Object {
+
+  required int32 cmd = 1;
+  required int32 sender = 2;
+  required int32 receiver = 3;
+  required bool send_dir = 4;
+  message Object_ {
+
+    required int32 id = 1;
+    required string uri = 2;
+    required int32 port = 3;
+  }
+
+  repeated Object_ objects = 5;
+
+  repeated int32 data_type = 6;
 }
