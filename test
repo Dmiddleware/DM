@@ -1,0 +1,117 @@
+#include <utility>
+#include <vector>
+#include <unordered_map>
+#include <string>
+#include <algorithm>
+#include <iostream>
+#include <utility>
+#include <vector>
+#include <unordered_map>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class AdapConcern {
+public:
+    explicit AdapConcern(int adap_id){
+        adapid = adap_id;
+    }
+    using MonitorHandle = std::function<
+        bool(int key, int value)>; // should be the format: void(std::vector <Val>& key, std::vector <Val> &value)>
+    using AnalyzeHandle = std::function<
+        bool(int key, int value)>;
+    using ExecutionHandle = std::function<
+        bool(int key, int value)>;
+
+    void set_mon_handle(const MonitorHandle& handle){
+        mon_handle_ = handle;
+    }
+    void set_ana_handle(const MonitorHandle& handle){
+        ana_handle_ = handle;
+    }
+    void set_exe_handle(const MonitorHandle& handle){
+        exe_handle_ = handle;
+    }
+    MonitorHandle mon_handle_;
+    AnalyzeHandle ana_handle_;
+    ExecutionHandle exe_handle_;
+private:
+    int adapid;
+};
+
+class MHandle{
+public:
+    bool operator()(int key, int value){
+        if(key > 0 && value > 0)
+        {
+            Mkey = ++key;
+            Mvalue = ++value;
+            cout<<Mkey<<" "<<Mvalue<<endl;
+            return true;
+        }
+        else return false;
+    }
+private:
+    int Mkey;
+    int Mvalue;
+};
+
+class AHandle{
+public:
+    bool operator()(int key, int value){
+        if(key > 0 && value > 0)
+        {
+            Akey = ++key;
+            Avalue = ++value;
+            cout<<Akey<<" "<<Avalue<<endl;
+            return true;
+        }
+        else return false;
+    }
+private:
+    int Akey;
+    int Avalue;
+};
+
+class EHandle{
+public:
+    bool operator()(int key, int value){
+        if(key > 0 && value > 0)
+        {
+            result = key+value;
+            cout<<result<<endl;
+            return true;
+        }
+        else return false;
+    }
+private:
+    int result;
+};
+
+class Worker {
+public:
+    Worker(int worker_id){
+        id =worker_id;
+    }
+    void process(AdapConcern& adap, int key, int value){
+        cout<<"*******"<<endl;
+        adap.mon_handle_(key, value);
+        adap.ana_handle_(key, value);
+        adap.exe_handle_(key, value);
+        //cout<<"test result: "<<adap.exe_handle<<endl;
+    }
+private:
+    int id;
+};
+
+int main()
+{
+    AdapConcern adapcon_(0);
+    adapcon_.set_mon_handle(MHandle());
+    adapcon_.set_ana_handle(AHandle());
+    adapcon_.set_exe_handle(EHandle());
+    Worker worker_(0);
+    worker_.process(adapcon_,1,1);
+    return 0;
+}
